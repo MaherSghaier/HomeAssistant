@@ -1,0 +1,146 @@
+blueprint:
+  name: Prayer Time Notification
+  description: Notification at the time of the islamic prayers. PLEASE make sure to install 'Islamic Prayer Times' integration before you use this blueprint.
+  domain: automation
+  input:
+    Mobile_to_Notify:
+      name: Mobile Device to notify
+      description: Device needs to run the official Home Assistant app to receive
+        notifications.
+      default: ''
+      selector:
+        device:
+          integration: mobile_app
+    Media_Player_to_Notify:
+      name: Media Player to play Athan
+      description: Choose Media player device to play the Athan.
+      selector:
+        entity:
+          domain: media_player
+
+trigger:
+  - platform: time
+    at: sensor.fajr_prayer
+    id: Fajr
+  - platform: time
+    id: Duhr
+    at: sensor.dhuhr_prayer
+  - platform: time
+    id: Asr
+    at: sensor.asr_prayer
+  - platform: time
+    at: sensor.maghrib_prayer
+    id: Maghrib
+  - platform: time
+    at: sensor.isha_prayer
+    id: Isha
+condition: []
+action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Fajr
+      sequence:
+      - type: notify
+        domain: mobile_app
+        device_id: !input 'Mobile_to_Notify'
+        title: 🕌 Appel à la prière 🕌
+        message:  حان الآن موعد صلاة الفجر
+    - conditions:
+      - condition: trigger
+        id: Duhr
+      sequence:
+      - type: notify
+        domain: mobile_app
+        device_id: !input 'Mobile_to_Notify'
+        title: 🕌 Appel à la prière 🕌
+        message: حان الآن موعد صلاة الظهر
+      - service: media_player.play_media
+        target:
+          entity_id: !input 'Media_Player_to_Notify'
+        data:
+          media_content_id: media-source://media_source/local/Adhaan.mp3
+          media_content_type: audio/mpeg
+        metadata:
+          title: Adhaan.mp3
+          thumbnail: null
+          media_class: music
+          children_media_class: null
+          navigateIds:
+            - {}
+            - media_content_type: app
+              media_content_id: media-source://media_source
+    - conditions:
+      - condition: trigger
+        id: Asr
+      sequence:
+      - type: notify
+        domain: mobile_app
+        device_id: !input 'Mobile_to_Notify'
+        title: 🕌 Appel à la prière 🕌
+        message: حان الآن موعد صلاة العصر
+      - service: media_player.play_media
+        target:
+          entity_id: !input 'Media_Player_to_Notify'
+        data:
+          media_content_id: media-source://media_source/local/Adhaan.mp3
+          media_content_type: audio/mpeg
+        metadata:
+          title: Adhaan.mp3
+          thumbnail: null
+          media_class: music
+          children_media_class: null
+          navigateIds:
+            - {}
+            - media_content_type: app
+              media_content_id: media-source://media_source
+    - conditions:
+      - condition: trigger
+        id: Maghrib
+      sequence:
+      - type: notify
+        domain: mobile_app
+        device_id: !input 'Mobile_to_Notify'
+        title: 🕌 Appel à la prière 🕌
+        message: حان الآن موعد صلاة المغرب
+      - service: media_player.play_media
+        target:
+          entity_id: !input 'Media_Player_to_Notify'
+        data:
+          media_content_id: media-source://media_source/local/Adhaan.mp3
+          media_content_type: audio/mpeg
+        metadata:
+          title: Adhaan.mp3
+          thumbnail: null
+          media_class: music
+          children_media_class: null
+          navigateIds:
+            - {}
+            - media_content_type: app
+              media_content_id: media-source://media_source
+    - conditions:
+      - condition: trigger
+        id: Isha
+      sequence:
+      - type: notify
+        domain: mobile_app
+        device_id: !input 'Mobile_to_Notify'
+        title: 🕌 Appel à la prière 🕌
+        message: حان الآن موعد صلاة العشاء
+      - service: media_player.play_media
+        target:
+          entity_id: !input 'Media_Player_to_Notify'
+        data:
+          media_content_id: media-source://media_source/local/Adhaan.mp3
+          media_content_type: audio/mpeg
+        metadata:
+          title: Adhaan.mp3
+          thumbnail: null
+          media_class: music
+          children_media_class: null
+          navigateIds:
+            - {}
+            - media_content_type: app
+              media_content_id: media-source://media_source
+    default: []
+mode: single
